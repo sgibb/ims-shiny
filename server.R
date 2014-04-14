@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$smHws)) {
       return(s)
     } else {
-      return(transformIntensity(s, savitzkyGolay, halfWindowSize=input$smHws))
+      return(suppressWarnings(smoothIntensity(s, method="SavitzkyGolay", halfWindowSize=input$smHws)))
     }
   })
 
@@ -53,7 +53,7 @@ shinyServer(function(input, output, session) {
   })
 
   meanSpectrum <- reactive({
-    return(mergeMassSpectra(baselineCorrectedSpectra()))
+    return(averageMassSpectra(baselineCorrectedSpectra()))
   })
 
   peaks <- reactive({
@@ -84,7 +84,7 @@ shinyServer(function(input, output, session) {
   })
 
   iMatrix <- reactive({
-    return(intensityMatrix(baselineCorrectedSpectra()))
+    return(.intensityMatrix(baselineCorrectedSpectra()))
   })
 
   ## taken from https://gist.github.com/wch/5436415

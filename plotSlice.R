@@ -17,3 +17,17 @@ plotSlice <- function(im, roirange, pixel, ...) {
   rasterImage(as.raster(p), xleft=1, xright=ncol(p), ybottom=1, ytop=nrow(p),
               interpolate=FALSE)
 }
+
+.intensityMatrix <- function(l) {
+  mass <- sort(x=unlist(lapply(l, function(x)x@mass)), method="quick")
+  uniqueMass <- unique(mass)
+
+  ## build matrix
+  m <- do.call(rbind, lapply(l, function(x) {
+    return(x@intensity[match(x=uniqueMass, table=x@mass, nomatch=NA)])}))
+
+  ## set column names
+  dimnames(m) <- list(NULL, c(uniqueMass))
+
+  return(m)
+}
