@@ -4,27 +4,7 @@ library("MALDIquant")
 
 load("spectra.RData")
 
-source("plotSlice.R")
-
 s <- spectra
-
-x <- unlist(lapply(s, function(x)metaData(x)$imaging$pos["x"]))
-y <- unlist(lapply(s, function(x)metaData(x)$imaging$pos["y"]))
-
-rx <- range(x)
-ry <- range(y)
-
-nr <- diff(ry)+1
-nc <- diff(rx)+1
-
-print(nr)
-print(nc)
-
-x <- x-(rx[1]-1)
-y <- y-(ry[1]-1)
-
-pixel <- matrix(FALSE, nrow=nr, ncol=nc, byrow=TRUE)
-pixel[matrix(c(y, x), ncol=2)] <- TRUE
 
 shinyServer(function(input, output, session) {
 
@@ -83,10 +63,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  iMatrix <- reactive({
-    return(.intensityMatrix(baselineCorrectedSpectra()))
-  })
-
   ## taken from https://gist.github.com/wch/5436415
   output$plotSlices <- renderUI({
     plotOutputList <- lapply(seq_along(selRoi()), function(i) {
@@ -103,9 +79,9 @@ shinyServer(function(input, output, session) {
         roiR <- roiRange()
         plotname <- paste0("plot", my_i)
         output[[plotname]] <- renderPlot({
-          plotSlice(iMatrix(), roiR[[my_i]], pixel=pixel,
-                    main=paste0("ROI: ", selRoi()[my_i], " +/- ",
-                                input$roiTolerance, " m/z"))
+          plotImsSlice(baselineCorrectedSpectra(), roiR[[my_i]],
+                       main=paste0("ROI: ", selRoi()[my_i], " +/- ",
+                                   input$roiTolerance, " m/z"))
         })
       })
     }
