@@ -79,6 +79,7 @@ shinyServer(function(input, output, session) {
         roiR <- roiRange()
         plotname <- paste0("plot", my_i)
         output[[plotname]] <- renderPlot({
+          par(mar=c(0L, 0L, 2L, 0L))
           plotImsSlice(baselineCorrectedSpectra(), roiR[[my_i]],
                        main=paste0("ROI: ", selRoi()[my_i], " +/- ",
                                    input$roiTolerance, " m/z"))
