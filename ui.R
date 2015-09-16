@@ -2,7 +2,7 @@ library("shiny")
 
 shinyUI(pageWithSidebar(
 
-  headerPanel("MALDIquant - IMS example"),
+  headerPanel("MALDIquant - MSI example"),
 
   sidebarPanel(
     sliderInput(inputId="smHws", label="Savitzky-Golay Filter - halfWindowSize:",

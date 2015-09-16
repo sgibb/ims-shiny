@@ -54,15 +54,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  roiRange <- reactive({
-    if (is.null(input$roiTolerance)) {
-      return(NULL)
-    } else {
-      return(lapply(selRoi(), function(x)c(x-input$roiTolerance,
-                                           x+input$roiTolerance)))
-    }
-  })
-
   ## taken from https://gist.github.com/wch/5436415
   output$plotSlices <- renderUI({
     plotOutputList <- lapply(seq_along(selRoi()), function(i) {
@@ -76,11 +67,11 @@ shinyServer(function(input, output, session) {
     # of when the expression is evaluated.
       local({
         my_i <- i
-        roiR <- roiRange()
         plotname <- paste0("plot", my_i)
         output[[plotname]] <- renderPlot({
           par(mar=c(0L, 0L, 2L, 0L))
-          plotImsSlice(baselineCorrectedSpectra(), roiR[[my_i]],
+          plotMsiSlice(baselineCorrectedSpectra(), center=selRoi()[my_i],
+                       tolerance=input$roiTolerance,
                        main=paste0("ROI: ", selRoi()[my_i], " +/- ",
                                    input$roiTolerance, " m/z"))
         })
